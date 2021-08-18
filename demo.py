@@ -8,12 +8,14 @@
 @CreatedOn  : 2021/8/17 17:11
 ------------------------------------------
 """
+from os import getenv
+
 from redis_utils import RedisUtils
 
 redis_cfg = {
-    'host': '192.168.158.1',
+    'host': getenv("REDIS_HOST"),
     'port': 6379,
-    'password': 'maixiaochai'
+    'password': getenv("REDIS_PASSWORD"),
 }
 
 
@@ -23,10 +25,11 @@ def main():
 
     db = RedisUtils(**redis_cfg)
 
-    for value in values:
-        db.sadd(set_name, value)
+    # for value in values:
+    #     db.sadd(set_name, value)
 
     total = db.scard(set_name)
+
     print(total)  # 2
     print(type(total))  # int
 
