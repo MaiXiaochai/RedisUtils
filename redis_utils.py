@@ -8,6 +8,8 @@
 @CreatedOn  : 2021/8/17 16:01
 ------------------------------------------
 """
+from contextlib import contextmanager
+
 from redis import Redis, ConnectionPool
 
 
@@ -34,6 +36,24 @@ class RedisUtils:
         # 到这里，其实还没真正连接到 redis，现在还是个连接池的状态
         # 在真正要执行操作的时候，redis库会自己取连接、释放连接
         self.db = Redis(connection_pool=pool)
+
+    @staticmethod
+    def gen_pool():
+        pass
+
+    @property
+    @contextmanager
+    def pool(self):
+        _conn = None
+
+        try:
+            _conn = self.__pool.connection()
+            _cursor = _conn.cursor()
+            yield _cursor
+        finally:
+            _conn.commit()
+            _cursor.close()
+            _conn.close()
 
     def sadd(self, name, value):
         """
